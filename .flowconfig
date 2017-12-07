@@ -1,0 +1,7 @@
+[libs]
+config/flow/ignore.js
+
+
+[options]
+emoji=true
+esproposal.decorators=ignore

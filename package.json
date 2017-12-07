@@ -1,0 +1,29 @@
+{
+  "name": "shikensu",
+  "version": "1.0.0",
+  "description": "Run a sequence of functions on in-memory representations of files.",
+  "author": "icid.asset@gmail.com",
+  "license": "MIT",
+  "main": "src/shikensu.js",
+  "scripts": {
+    "build": "babel src/ -d lib/",
+    "prepublish": "npm run build",
+    "test": "ava ./tests/ --fail-fast",
+    "type-check": "flow check src/"
+  },
+  "devDependencies": {
+    "ava": "^0.24.0",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-flow": "^6.23.0"
+  },
+  "dependencies": {
+    "flow-static-land": "^0.2.8",
+    "glob-parent": "^3.1.0",
+    "globby": "^7.1.1"
+  },
+  "ava": {
+    "babel": "inherit",
+    "require": ["babel-register", "babel-polyfill"]
+  }
+}
