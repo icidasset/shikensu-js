@@ -17,6 +17,7 @@ import path from "path"
 import test from "ava"
 
 import type { Eff } from "flow-static-land/lib/Eff"
+import type { Maybe } from "flow-static-land/lib/Maybe"
 
 
 // Library code
@@ -104,5 +105,76 @@ test("prefixDirname", async t => {
     t.is(localPath(def), "prefix/fixtures/example.md")
     t.is(def.parentPath, maybe.of(".." + path.sep))
     t.is(def.pathToRoot, maybe.of(".." + path.sep + ".." + path.sep))
+  })
+})
+
+
+test("rename", async t => {
+  const effect: Eff<{}, Promise<Dictionary>> = runTask(
+    task.map(
+      Contrib.rename3("example.md", "test.html"),
+      Shikensu.listRelative([PATTERN], "./tests/fixtures")
+    )
+  )
+
+  await runEff(effect).then(dictionary => {
+    const def: Definition = fun.pipe(arr.last, maybe.fromJust)(dictionary)
+
+    t.is(def.basename, "test")
+    t.is(def.extname, ".html")
+  })
+})
+
+
+test("renameExt", async t => {
+  const effect: Eff<{}, Promise<Dictionary>> = runTask(
+    task.map(
+      Contrib.renameExt3(".md", ".html"),
+      Shikensu.listRelative([PATTERN], "./tests/fixtures")
+    )
+  )
+
+  await runEff(effect).then(dictionary => {
+    const def: Definition = fun.pipe(arr.last, maybe.fromJust)(dictionary)
+
+    t.is(def.extname, ".html")
+  })
+})
+
+
+test("renderContent", async t => {
+  const buf: Buffer = Buffer.from("🥑", "utf8")
+  const bufm: Maybe<Buffer> = maybe.of(buf)
+  const to_s = m => maybe.map(b => b.toString(), m)
+
+  const effect: Eff<{}, Promise<Dictionary>> = runTask(
+    task.map(
+      Contrib.renderContent2(_ => bufm),
+      Shikensu.listRelative([PATTERN], "./tests/fixtures")
+    )
+  )
+
+  await runEff(effect).then(dictionary => {
+    const def: Definition = fun.pipe(arr.last, maybe.fromJust)(dictionary)
+    t.is(to_s(def.content), to_s(bufm))
+  })
+})
+
+
+test("setContent", async t => {
+  const buf: Buffer = Buffer.from("🥑", "utf8")
+  const bufm: Maybe<Buffer> = maybe.of(buf)
+  const to_s = m => maybe.map(b => b.toString(), m)
+
+  const effect: Eff<{}, Promise<Dictionary>> = runTask(
+    task.map(
+      Contrib.setContent2(buf),
+      Shikensu.listRelative([PATTERN], "./tests/fixtures")
+    )
+  )
+
+  await runEff(effect).then(dictionary => {
+    const def: Definition = fun.pipe(arr.last, maybe.fromJust)(dictionary)
+    t.is(to_s(def.content), to_s(bufm))
   })
 })

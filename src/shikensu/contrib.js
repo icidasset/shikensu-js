@@ -228,7 +228,7 @@ export const renameDef3 = fun.curry(renameDef)
  ** renameExt(".markdown", ".html", dictionary)
  **
  ** The definitions that had the extname ".markdown"
- ** now have the extname ".html"
+ ** now have the extname ".html".
  */
 export function renameExt(oldExtname: string, newExtname: string, dict: Dictionary): Dictionary {
   return arr.map(def => renameExtDef(oldExtname, newExtname, def), dict)
