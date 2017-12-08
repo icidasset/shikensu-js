@@ -22,38 +22,7 @@ import type { Task } from "flow-static-land/lib/Task"
 
 
 /**
- **   Path to root, when there is one.
- **
- **   For example, if `dirname` is 'example/subdir',
- **   then this will be `../../`.
- **
- **   If the `dirname` is empty,
- **   then this will be empty as well.
- */
-export const compilePathToRoot = (dirname: string): Maybe<string> => {
-  const ds: Array<string> =
-    dirname.split(path.sep).slice(1)
-
-  return ds.length === 0
-    ? maybe.Nothing
-    : maybe.of(
-        ds.map(_ => "..").join(path.sep) + path.sep
-      )
-}
-
-
-/**
- **   Path to parent, when there is one.
- */
-export const compileParentPath = (dirname: string): Maybe<string> => {
-  return dirname === ""
-    ? maybe.Nothing
-    : maybe.of(".." + path.sep)
-}
-
-
-/**
- **   No single dots for directories please.
+ ** No single dots for directories please.
  */
 export const withoutSingleDot = (directoryPath: string): string => {
   return directoryPath === "."
@@ -67,7 +36,7 @@ export const withoutSingleDot = (directoryPath: string): string => {
 
 
 /**
- **   Sequence
+ ** Sequence
  */
 export const sequence = function<A, B>(list: Arr<Task<A, B>>): Task<A, Arr<B>> {
   return arr.reduce(

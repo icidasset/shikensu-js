@@ -16,11 +16,11 @@ import type { Task } from "flow-static-land/lib/Task"
 
 export type Definition = {
   basename: string,
-  dirname: string,
   extname: string,
+  dirname: string,
   pattern: string,
-  rootDirname: string,
   workingDirname: string,
+  rootDirname: string,
 
   // Additional properties
   content: Maybe<Buffer>,
@@ -37,3 +37,4 @@ export type Definition = {
 export type Dictionary = Arr<Definition>
 export type ListTask = Task<{}, Dictionary>
 export type Metadata = any
+export type Renderer = (Definition => Maybe<Buffer>)

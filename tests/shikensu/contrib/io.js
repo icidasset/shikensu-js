@@ -50,7 +50,6 @@ test("read", async t => {
     const def: Definition = fun.pipe(arr.head, maybe.fromJust)(dictionary)
     const contents: Buffer = maybe.fromMaybe(emptyBuffer, def.content)
 
-    t.truthy(def)
     t.is(contents.toString(), "# Example 🦄\n")
   })
 })
@@ -58,7 +57,7 @@ test("read", async t => {
 
 test("write", async t => {
   const pattern = path.join("tests", "fixtures", "example.md")
-  const destination = path.join("tests", "tmp")
+  const destination = "tmp"
 
   const effect: Eff<{}, Promise<Dictionary>> = runTask(
     fun.pipe(
@@ -71,7 +70,7 @@ test("write", async t => {
   )
 
   await runEff(effect).then(_ => {
-    return io.readFile("./tests/tmp/example.md")()
+    return io.readFile("./tmp/example.md")()
   }).then((buf: Buffer) => {
     t.is(buf.toString(), "# Example 🦄\n")
   })

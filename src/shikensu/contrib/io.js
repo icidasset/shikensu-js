@@ -44,7 +44,7 @@ export const readDef = (
     task.inj,
     taskMap2(c => {
       // assign contents to the definition
-      return Object.assign({}, def, { content: maybe.of(c) })
+      return { ...def, content: maybe.of(c) }
     })
   )(
     def

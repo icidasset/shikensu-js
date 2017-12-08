@@ -7,11 +7,9 @@
 
 import * as arr from "flow-static-land/lib/Arr"
 import * as fun from "flow-static-land/lib/Fun"
-import * as functor from "flow-static-land/lib/Functor"
 import * as maybe from "flow-static-land/lib/Maybe"
-import * as monoid from "flow-static-land/lib/Monoid"
+import * as paths from "./shikensu/internal/paths"
 import * as task from "flow-static-land/lib/Task"
-import * as utils from "./shikensu/internal/utilities"
 
 import {
   arrMap2, arrReduce3,
@@ -25,14 +23,18 @@ import path from "path"
 
 import type { Arr } from "flow-static-land/lib/Arr"
 import type { Task } from "flow-static-land/lib/Task"
-import type { Dictionary, Definition, ListTask } from "./shikensu/internal/types"
+
+import type {
+  Dictionary, Definition,
+  ListTask, Renderer
+} from "./shikensu/internal/types"
 
 
 
 // RE-EXPORT
 
 
-export type { Dictionary, Definition }
+export type { Dictionary, Definition, Renderer }
 export * from "./shikensu/internal/paths"
 
 
@@ -41,8 +43,8 @@ export * from "./shikensu/internal/paths"
 
 
 /**
- **   Make a single dictionary based on multiple glob patterns
- **   and the absolute path of some directory.
+ ** Make a single dictionary based on multiple glob patterns
+ ** and the absolute path of some directory.
  */
 export const list = (patterns: Array<string>, rootDirname: string): ListTask => fun.pipe(
   arr.inj,
@@ -72,13 +74,13 @@ export const list = (patterns: Array<string>, rootDirname: string): ListTask => 
 
 
 /**
- **   Flipped version of `list`.
+ ** Flipped version of `list`.
  */
 export const listF = fun.flip(list)
 
 
 /**
- **   Same as `list`, but given a relative directory.
+ ** Same as `list`, but given a relative directory.
  */
 export const listRelative = (patterns: Array<string>, relativePath: string): ListTask => {
   const absolutePath = path.join(process.cwd(), relativePath)
@@ -87,13 +89,13 @@ export const listRelative = (patterns: Array<string>, relativePath: string): Lis
 
 
 /**
- **   Flipped version of `listRelative`.
+ ** Flipped version of `listRelative`.
  */
 export const listRelativeF = fun.flip(listRelative)
 
 
 /**
- **   Curried versions.
+ ** Curried versions.
  */
 export const list2 = fun.curry(list)
 export const listF2 = fun.curry(listF)
@@ -106,13 +108,37 @@ export const listRelativeF2 = fun.curry(listRelativeF)
 
 
 /**
- **   Fork a Definition.
+ ** Fork a Definition.
  */
-export const forkDefinition = undefined
+export const forkDefinition = (
+  newLocalPath: string,
+  def: Definition
+): Definition => {
+  const dirname = fun.pipe
+    (path.dirname, withoutSingleDot)
+    (newLocalPath)
+
+    const extname =
+      path.extname(newLocalPath)
+
+  return {
+    basename:           path.basename(newLocalPath, extname),
+    extname:            path.extname(newLocalPath),
+    dirname:            dirname,
+    pattern :           def.pattern,
+    workingDirname:     def.workingDirname,
+    rootDirname:        def.rootDirname,
+
+    content:            def.content,
+    metadata:           def.metadata,
+    parentPath:         paths.compileParentPath(dirname),
+    pathToRoot:         paths.compilePathToRoot(dirname)
+  }
+}
 
 
 /**
- **   Make a Definition.
+ ** Make a Definition.
  */
 export const makeDefinition = (
   rootDirname: string,
@@ -127,21 +153,25 @@ export const makeDefinition = (
     ? workspacePath.replace(new RegExp("^" + workingDirname + path.sep), "")
     : workspacePath
 
-  const dirname = withoutSingleDot(path.dirname(localPath))
-  const extname = path.extname(localPath)
+  const dirname = fun.pipe
+    (path.dirname, withoutSingleDot)
+    (localPath)
+
+  const extname =
+    path.extname(localPath)
 
   return {
-    basename: path.basename(localPath, extname),
-    dirname: dirname,
-    extname: extname,
-    pattern: pattern,
-    rootDirname: rootDirname,
-    workingDirname: workingDirname,
+    basename:           path.basename(localPath, extname),
+    extname:            extname,
+    dirname:            dirname,
+    pattern:            pattern,
+    workingDirname:     workingDirname,
+    rootDirname:        rootDirname,
 
-    content: maybe.Nothing,
-    metadata: {},
-    parentPath: utils.compileParentPath(dirname),
-    pathToRoot: utils.compilePathToRoot(dirname)
+    content:            maybe.Nothing,
+    metadata:           {},
+    parentPath:         paths.compileParentPath(dirname),
+    pathToRoot:         paths.compilePathToRoot(dirname)
   }
 }
 
@@ -151,7 +181,7 @@ export const makeDefinition3 = fun.curry(makeDefinition)
 
 
 /**
- **   Make a Dictionary.
+ ** Make a Dictionary.
  */
 export const makeDictionary = (
   rootDirname: string,

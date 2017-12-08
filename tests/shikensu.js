@@ -39,7 +39,6 @@ test("regular", async t => {
   await runEff(effect).then(dictionary => {
     const def: Definition = fun.pipe(arr.head, maybe.fromJust)(dictionary)
 
-    t.truthy(def)
     t.is(def.basename, "example")
     t.is(def.dirname, "fixtures")
     t.is(def.extname, ".md")
@@ -58,7 +57,6 @@ test("dot", async t => {
   await runEff(effect).then(dictionary => {
     const def: Definition = fun.pipe(arr.head, maybe.fromJust)(dictionary)
 
-    t.truthy(def)
     t.is(def.basename, "example")
     t.is(def.dirname, "fixtures")
     t.is(def.extname, ".md")
@@ -77,7 +75,6 @@ test("without workingDirname", async t => {
   await runEff(effect).then(dictionary => {
     const def: Definition = fun.pipe(arr.head, maybe.fromJust)(dictionary)
 
-    t.truthy(def)
     t.is(def.basename, "example")
     t.is(def.dirname, "fixtures")
     t.is(def.extname, ".md")
@@ -96,7 +93,6 @@ test("no dirname", async t => {
   await runEff(effect).then(dictionary => {
     const def: Definition = fun.pipe(arr.head, maybe.fromJust)(dictionary)
 
-    t.truthy(def)
     t.is(def.basename, "example")
     t.is(def.dirname, "")
     t.is(def.extname, ".md")
@@ -115,7 +111,6 @@ test("root file", async t => {
   await runEff(effect).then(dictionary => {
     const def: Definition = fun.pipe(arr.head, maybe.fromJust)(dictionary)
 
-    t.truthy(def)
     t.is(def.basename, "README")
     t.is(def.dirname, "")
     t.is(def.extname, ".md")
