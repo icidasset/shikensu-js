@@ -59,9 +59,9 @@ export const sequence = function<A, B>(list: Arr<Task<A, B>>): Task<A, Arr<B>> {
 // Curried functions and aliases
 
 
-export const arrMap2 = fun.curry(arr.map)
-export const arrReduce3 = fun.curry(arr.reduce)
-export const maybeWithDefault2 = fun.curry(maybe.fromMaybe)
-export const taskChain2 = fun.curry(task.chain)
-export const taskMap2 = fun.curry(task.map)
+export const arrMap = fun.curry(arr.map)
+export const arrReduce = fun.curry(arr.reduce)
+export const maybeWithDefault = fun.curry(maybe.fromMaybe)
+export const taskChain = fun.curry(task.chain)
+export const taskMap = fun.curry(task.map)
 export const taskSequence = sequence

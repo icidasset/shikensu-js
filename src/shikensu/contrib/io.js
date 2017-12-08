@@ -10,9 +10,9 @@ import * as maybe from "flow-static-land/lib/Maybe"
 import * as fun from "flow-static-land/lib/Fun"
 import * as task from "flow-static-land/lib/Task"
 
-import { emptyBuffer, readFile, writeFile2 } from "../internal/io"
+import { emptyBuffer, readFile, writeFile } from "../internal/io"
 import { absolutePath } from "../internal/paths"
-import { arrMap2, maybeWithDefault2, sequence, taskMap2 } from "../internal/utilities"
+import { arrMap, maybeWithDefault, sequence, taskMap } from "../internal/utilities"
 import fs from "fs"
 
 import type { Task } from "flow-static-land/lib/Task"
@@ -23,26 +23,30 @@ import type { Dictionary, Definition } from "../internal/types"
 // Read
 
 
-export const read = (
-  dict: Dictionary
-): Task<{}, Dictionary> => (
+export const read = _read
+export const readDef = _readDef
 
-  fun.pipe
-    (arrMap2(readDef), sequence)
+
+function _read(
+  dict: Dictionary
+): Task<{}, Dictionary> {
+
+  return fun.pipe
+    (arrMap(readDef), sequence)
     (dict)
 
-)
+}
 
 
-export const readDef = (
+function _readDef(
   def: Definition
-): Task<{}, Definition> => (
+): Task<{}, Definition> {
 
-  fun.pipe(
+  return fun.pipe(
     absolutePath,
     readFile,
     task.inj,
-    taskMap2(c => {
+    taskMap(c => {
       // assign contents to the definition
       return { ...def, content: maybe.of(c) }
     })
@@ -50,41 +54,41 @@ export const readDef = (
     def
   )
 
-)
+}
 
 
 
 // Write
 
 
-export const write = (
+export const write = fun.curry(_write)
+export const writeDef = fun.curry(_writeDef)
+
+
+function _write(
   dest: string,
   dict: Dictionary
-): Task<{}, Dictionary> => (
+): Task<{}, Dictionary> {
 
-  fun.pipe
-    (arrMap2(writeDef2(dest)), sequence)
+  return fun.pipe
+    (arrMap(writeDef(dest)), sequence)
     (dict)
 
-)
+}
 
 
-export const writeDef = (
+function _writeDef(
   dest: string,
   def: Definition
-): Task<{}, Definition> => (
+): Task<{}, Definition> {
 
-  fun.pipe(
-    maybeWithDefault2(emptyBuffer),
-    writeFile2(dest, def),
+  return fun.pipe(
+    maybeWithDefault(emptyBuffer),
+    writeFile(dest, def),
     task.inj,
-    taskMap2(_ => def)
+    taskMap(_ => def)
   )(
     def.content
   )
 
-)
-
-
-export const write2 = fun.curry(write)
-export const writeDef2 = fun.curry(writeDef)
+}

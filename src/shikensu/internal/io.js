@@ -16,23 +16,13 @@ import type { Definition } from "./types"
 
 
 
-// ⚗️
+// Read
 
 
-export const emptyBuffer: Buffer = Buffer.from([])
+export const readFile = _readFile
 
 
-export const makeDirectoryPath = (path: string): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    mkdirp(path, (err: ?ErrnoError) => err
-      ? reject(err)
-      : resolve()
-    )
-  })
-}
-
-
-export const readFile = (path: string): (() => Promise<Buffer>) => {
+function _readFile(path: string): (() => Promise<Buffer>) {
   return () => new Promise((resolve, reject) => {
     fs.readFile(
       path,
@@ -45,11 +35,18 @@ export const readFile = (path: string): (() => Promise<Buffer>) => {
 }
 
 
-export const writeFile =  (
+
+// Write
+
+
+export const writeFile = fun.curry(_writeFile)
+
+
+function _writeFile(
   destination: string,
   def: Definition,
   contents: Buffer
-): (() => Promise<void>) => {
+): (() => Promise<void>) {
   const targetDir = path.join(def.rootDirname, destination)
   const targetPath = path.join(targetDir, localPath(def))
 
@@ -66,4 +63,18 @@ export const writeFile =  (
 }
 
 
-export const writeFile2 = fun.curry(writeFile)
+
+// OTHER
+
+
+export const emptyBuffer: Buffer = Buffer.from([])
+
+
+export const makeDirectoryPath = (path: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    mkdirp(path, (err: ?ErrnoError) => err
+      ? reject(err)
+      : resolve()
+    )
+  })
+}

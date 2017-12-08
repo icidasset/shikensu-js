@@ -61,9 +61,9 @@ test("write", async t => {
 
   const effect: Eff<{}, Promise<Dictionary>> = runTask(
     fun.pipe(
-      Shikensu.list2([pattern]),
-      utils.taskChain2(ShikensuIO.read),
-      utils.taskChain2(ShikensuIO.write2(destination)),
+      Shikensu.list([pattern]),
+      utils.taskChain(ShikensuIO.read),
+      utils.taskChain(ShikensuIO.write(destination)),
     )(
       process.cwd()
     )

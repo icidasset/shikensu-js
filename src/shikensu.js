@@ -12,8 +12,8 @@ import * as paths from "./shikensu/internal/paths"
 import * as task from "flow-static-land/lib/Task"
 
 import {
-  arrMap2, arrReduce3,
-  taskMap2, taskSequence,
+  arrMap, arrReduce,
+  taskMap, taskSequence,
   withoutSingleDot
 } from "./shikensu/internal/utilities"
 
@@ -46,61 +46,50 @@ export * from "./shikensu/internal/paths"
  ** Make a single dictionary based on multiple glob patterns
  ** and the absolute path of some directory.
  */
-export const list = (patterns: Array<string>, rootDirname: string): ListTask => fun.pipe(
-  arr.inj,
+export const list   = fun.curry(_list)
+export const listF  = fun.pipe(fun.flip, fun.curry)(_list)
 
-  // make a task that will run `globby` for each pattern
-  // and transform the resulting array into an `Arr`
-  arrMap2(
-    pattern => fun.pipe(
-      p => () => globby(p, { cwd: rootDirname }),
-      t => task.inj(t),
-      t => task.map(arr.inj, t),
-      t => task.map(makeDictionary3(rootDirname)(pattern), t)
-    )(pattern)
-  ),
 
-  // transform the list of tasks into one task
-  // and concatenate all the resulting dictionaries
-  taskSequence,
-  taskMap2(
-    arrReduce3
-      (arr.concat)
-      (arr.empty())
+function _list(patterns: Array<string>, rootDirname: string): ListTask {
+  return fun.pipe(
+    arr.inj,
+
+    // make a task that will run `globby` for each pattern
+    // and transform the resulting array into an `Arr`
+    arrMap(
+      pattern => fun.pipe(
+        p => () => globby(p, { cwd: rootDirname }),
+        t => task.inj(t),
+        t => task.map(arr.inj, t),
+        t => task.map(makeDictionary(rootDirname, pattern), t)
+      )(pattern)
+    ),
+
+    // transform the list of tasks into one task
+    // and concatenate all the resulting dictionaries
+    taskSequence,
+    taskMap(
+      arrReduce
+        (arr.concat)
+        (arr.empty())
+    )
+  )(
+    patterns
   )
-)(
-  patterns
-)
-
-
-/**
- ** Flipped version of `list`.
- */
-export const listF = fun.flip(list)
+}
 
 
 /**
  ** Same as `list`, but given a relative directory.
  */
-export const listRelative = (patterns: Array<string>, relativePath: string): ListTask => {
+export const listRelative   = fun.curry(_listRelative)
+export const listRelativeF  = fun.pipe(fun.flip, fun.curry)(_listRelative)
+
+
+function _listRelative(patterns: Array<string>, relativePath: string): ListTask {
   const absolutePath = path.join(process.cwd(), relativePath)
-  return list(patterns, absolutePath)
+  return _list(patterns, absolutePath)
 }
-
-
-/**
- ** Flipped version of `listRelative`.
- */
-export const listRelativeF = fun.flip(listRelative)
-
-
-/**
- ** Curried versions.
- */
-export const list2 = fun.curry(list)
-export const listF2 = fun.curry(listF)
-export const listRelative2 = fun.curry(listRelative)
-export const listRelativeF2 = fun.curry(listRelativeF)
 
 
 
@@ -110,16 +99,19 @@ export const listRelativeF2 = fun.curry(listRelativeF)
 /**
  ** Fork a Definition.
  */
-export const forkDefinition = (
+export const forkDefinition = fun.curry(_forkDefinition)
+
+
+function _forkDefinition(
   newLocalPath: string,
   def: Definition
-): Definition => {
+): Definition {
   const dirname = fun.pipe
     (path.dirname, withoutSingleDot)
     (newLocalPath)
 
-    const extname =
-      path.extname(newLocalPath)
+  const extname =
+    path.extname(newLocalPath)
 
   return {
     basename:           path.basename(newLocalPath, extname),
@@ -140,11 +132,14 @@ export const forkDefinition = (
 /**
  ** Make a Definition.
  */
-export const makeDefinition = (
+export const makeDefinition = fun.curry(_makeDefinition)
+
+
+function _makeDefinition(
   rootDirname: string,
   pattern: string,
   workspacePath: string
-): Definition => {
+): Definition {
   const workingDirname = fun.pipe
     (globParent, withoutSingleDot)
     (pattern)
@@ -176,21 +171,20 @@ export const makeDefinition = (
 }
 
 
-export const makeDefinition3 = fun.curry(makeDefinition)
-
-
 
 /**
  ** Make a Dictionary.
  */
-export const makeDictionary = (
+export const makeDictionary = fun.curry(_makeDictionary)
+
+
+function _makeDictionary(
   rootDirname: string,
   pattern: string,
   filepaths: Arr<string>
-): Dictionary => arr.map(
-  makeDefinition3(rootDirname)(pattern),
-  filepaths
-)
-
-
-export const makeDictionary3 = fun.curry(makeDictionary)
+): Dictionary {
+  return arr.map(
+    makeDefinition(rootDirname, pattern),
+    filepaths
+  )
+}

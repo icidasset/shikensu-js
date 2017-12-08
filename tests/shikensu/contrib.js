@@ -44,7 +44,7 @@ const PATTERN = path.join("**", "*.md")
 test("clone", async t => {
   const effect: Eff<{}, Promise<Dictionary>> = runTask(
     task.map(
-      Contrib.clone3("example.md")("cloned.md"),
+      Contrib.clone("example.md", "cloned.md"),
       Shikensu.listRelative([PATTERN], "./tests/fixtures")
     )
   )
@@ -62,7 +62,7 @@ test("clone", async t => {
 test("exclude", async t => {
   const effect: Eff<{}, Promise<Dictionary>> = runTask(
     task.map(
-      Contrib.exclude2("example.md"),
+      Contrib.exclude("example.md"),
       Shikensu.listRelative([PATTERN], "./tests/fixtures")
     )
   )
@@ -76,7 +76,7 @@ test("exclude", async t => {
 test("permalink", async t => {
   const effect: Eff<{}, Promise<Dictionary>> = runTask(
     task.map(
-      Contrib.permalink2("index"),
+      Contrib.permalink("index"),
       Shikensu.listRelative([PATTERN], "./tests/fixtures")
     )
   )
@@ -94,7 +94,7 @@ test("permalink", async t => {
 test("prefixDirname", async t => {
   const effect: Eff<{}, Promise<Dictionary>> = runTask(
     task.map(
-      Contrib.prefixDirname2("prefix/"),
+      Contrib.prefixDirname("prefix/"),
       Shikensu.listRelative([PATTERN], "./tests")
     )
   )
@@ -112,7 +112,7 @@ test("prefixDirname", async t => {
 test("rename", async t => {
   const effect: Eff<{}, Promise<Dictionary>> = runTask(
     task.map(
-      Contrib.rename3("example.md", "test.html"),
+      Contrib.rename("example.md", "test.html"),
       Shikensu.listRelative([PATTERN], "./tests/fixtures")
     )
   )
@@ -129,7 +129,7 @@ test("rename", async t => {
 test("renameExt", async t => {
   const effect: Eff<{}, Promise<Dictionary>> = runTask(
     task.map(
-      Contrib.renameExt3(".md", ".html"),
+      Contrib.renameExt(".md", ".html"),
       Shikensu.listRelative([PATTERN], "./tests/fixtures")
     )
   )
@@ -149,7 +149,7 @@ test("renderContent", async t => {
 
   const effect: Eff<{}, Promise<Dictionary>> = runTask(
     task.map(
-      Contrib.renderContent2(_ => bufm),
+      Contrib.renderContent(_ => bufm),
       Shikensu.listRelative([PATTERN], "./tests/fixtures")
     )
   )
@@ -168,7 +168,7 @@ test("setContent", async t => {
 
   const effect: Eff<{}, Promise<Dictionary>> = runTask(
     task.map(
-      Contrib.setContent2(buf),
+      Contrib.setContent(buf),
       Shikensu.listRelative([PATTERN], "./tests/fixtures")
     )
   )
