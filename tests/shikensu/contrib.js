@@ -1,9 +1,9 @@
 // @flow
 //
-// Tests.Shikensu.Contrib.IO
-// =========================
+// Tests.Shikensu.Contrib
+// ======================
 //
-// Tests for the `Shikensu.Contrib.IO` module.
+// Tests for the `Shikensu.Contrib` module.
 
 import { runEff } from "flow-static-land/lib/Eff"
 import { runTask } from "flow-static-land/lib/Task"
