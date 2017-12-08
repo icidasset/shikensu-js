@@ -15,7 +15,8 @@ import * as utils from "./shikensu/internal/utilities"
 
 import {
   arrMap2, arrReduce3,
-  taskMap2, taskSequence
+  taskMap2, taskSequence,
+  withoutSingleDot
 } from "./shikensu/internal/utilities"
 
 import globby from "globby"
@@ -48,11 +49,14 @@ export const list = (patterns: Array<string>, rootDirname: string): ListTask => 
 
   // make a task that will run `globby` for each pattern
   // and transform the resulting array into an `Arr`
-  arrMap2(fun.pipe(
-    p => () => globby(p),
-    t => task.inj(t),
-    t => task.map(arr.inj, t)
-  )),
+  arrMap2(
+    pattern => fun.pipe(
+      p => () => globby(p, { cwd: rootDirname }),
+      t => task.inj(t),
+      t => task.map(arr.inj, t),
+      t => task.map(makeDictionary3(rootDirname)(pattern), t)
+    )(pattern)
+  ),
 
   // transform the list of tasks into one task
   // and concatenate all the resulting dictionaries
@@ -88,8 +92,23 @@ export const listRelative = (patterns: Array<string>, relativePath: string): Lis
 export const listRelativeF = fun.flip(listRelative)
 
 
+/**
+ **   Curried versions.
+ */
+export const list2 = fun.curry(list)
+export const listF2 = fun.curry(listF)
+export const listRelative2 = fun.curry(listRelative)
+export const listRelativeF2 = fun.curry(listRelativeF)
+
+
 
 // Pure
+
+
+/**
+ **   Fork a Definition.
+ */
+export const forkDefinition = undefined
 
 
 /**
@@ -98,11 +117,17 @@ export const listRelativeF = fun.flip(listRelative)
 export const makeDefinition = (
   rootDirname: string,
   pattern: string,
-  localPath: string
+  workspacePath: string
 ): Definition => {
-  const workingDirname = globParent(pattern)
+  const workingDirname = fun.pipe
+    (globParent, withoutSingleDot)
+    (pattern)
 
-  const dirname = path.dirname(localPath)
+  const localPath = workingDirname.length
+    ? workspacePath.replace(new RegExp("^" + workingDirname + path.sep), "")
+    : workspacePath
+
+  const dirname = withoutSingleDot(path.dirname(localPath))
   const extname = path.extname(localPath)
 
   return {

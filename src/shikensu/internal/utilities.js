@@ -42,7 +42,6 @@ export const compilePathToRoot = (dirname: string): Maybe<string> => {
 }
 
 
-
 /**
  **   Path to parent, when there is one.
  */
@@ -50,6 +49,16 @@ export const compileParentPath = (dirname: string): Maybe<string> => {
   return dirname === ""
     ? maybe.Nothing
     : maybe.of(".." + path.sep)
+}
+
+
+/**
+ **   No single dots for directories please.
+ */
+export const withoutSingleDot = (directoryPath: string): string => {
+  return directoryPath === "."
+    ? ""
+    : directoryPath
 }
 
 
@@ -83,5 +92,7 @@ export const sequence = function<A, B>(list: Arr<Task<A, B>>): Task<A, Arr<B>> {
 
 export const arrMap2 = fun.curry(arr.map)
 export const arrReduce3 = fun.curry(arr.reduce)
+export const maybeWithDefault2 = fun.curry(maybe.fromMaybe)
+export const taskChain2 = fun.curry(task.chain)
 export const taskMap2 = fun.curry(task.map)
 export const taskSequence = sequence

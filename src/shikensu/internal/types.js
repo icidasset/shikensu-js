@@ -23,7 +23,7 @@ export type Definition = {
   workingDirname: string,
 
   // Additional properties
-  content: Maybe<string>,
+  content: Maybe<Buffer>,
   metadata: Metadata,
   parentPath: Maybe<string>,
   pathToRoot: Maybe<string>

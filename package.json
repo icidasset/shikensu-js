@@ -20,10 +20,14 @@
   "dependencies": {
     "flow-static-land": "^0.2.8",
     "glob-parent": "^3.1.0",
-    "globby": "^7.1.1"
+    "globby": "^7.1.1",
+    "mkdirp": "^0.5.1"
   },
   "ava": {
     "babel": "inherit",
-    "require": ["babel-register", "babel-polyfill"]
+    "require": [
+      "babel-register",
+      "babel-polyfill"
+    ]
   }
 }
