@@ -50,7 +50,7 @@ export const list   = fun.curry(_list)
 export const listF  = fun.pipe(fun.flip, fun.curry)(_list)
 
 
-function _list(patterns: Array<string>, rootDirname: string): ListTask {
+function _list(rootDirname: string, patterns: Array<string>): ListTask {
   return fun.pipe(
     arr.inj,
 
@@ -86,9 +86,9 @@ export const listRelative   = fun.curry(_listRelative)
 export const listRelativeF  = fun.pipe(fun.flip, fun.curry)(_listRelative)
 
 
-function _listRelative(patterns: Array<string>, relativePath: string): ListTask {
+function _listRelative(relativePath: string, patterns: Array<string>): ListTask {
   const absolutePath = path.join(process.cwd(), relativePath)
-  return _list(patterns, absolutePath)
+  return _list(absolutePath, patterns)
 }
 
 

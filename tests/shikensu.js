@@ -33,7 +33,7 @@ import type { Definition, Dictionary } from "../src/shikensu/internal/types"
 test("regular", async t => {
   const pattern = path.join("tests", "**", "*.md")
   const effect: Eff<{}, Promise<Dictionary>> = runTask(
-    Shikensu.list([pattern], process.cwd())
+    Shikensu.list(process.cwd(), [pattern])
   )
 
   await runEff(effect).then(dictionary => {
@@ -51,7 +51,7 @@ test("regular", async t => {
 test("dot", async t => {
   const pattern = path.join(".", "tests", "**", "*.md")
   const effect: Eff<{}, Promise<Dictionary>> = runTask(
-    Shikensu.listF(process.cwd(), [pattern])
+    Shikensu.listF([pattern], process.cwd())
   )
 
   await runEff(effect).then(dictionary => {
@@ -69,7 +69,7 @@ test("dot", async t => {
 test("without workingDirname", async t => {
   const pattern = path.join("**", "*.md")
   const effect: Eff<{}, Promise<Dictionary>> = runTask(
-    Shikensu.listRelative([pattern], "tests")
+    Shikensu.listRelative("tests", [pattern])
   )
 
   await runEff(effect).then(dictionary => {
@@ -87,7 +87,7 @@ test("without workingDirname", async t => {
 test("no dirname", async t => {
   const pattern = path.join("fixtures/*.md")
   const effect: Eff<{}, Promise<Dictionary>> = runTask(
-    Shikensu.listRelativeF("tests", [pattern])
+    Shikensu.listRelativeF([pattern], "tests")
   )
 
   await runEff(effect).then(dictionary => {
@@ -105,7 +105,7 @@ test("no dirname", async t => {
 test("root file", async t => {
   const pattern = path.join("*.md")
   const effect: Eff<{}, Promise<Dictionary>> = runTask(
-    Shikensu.listRelative([pattern], ".")
+    Shikensu.listRelative(".", [pattern])
   )
 
   await runEff(effect).then(dictionary => {
