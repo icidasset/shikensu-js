@@ -58,7 +58,7 @@ function failure(err) {
 
 
 pipe(
-  Shikensu.listRelative ("./blog"),
+  Shikensu.listRelative   ("./blog"),
 
   chainTask     ( read ),
   mapTask       ( flow ),
