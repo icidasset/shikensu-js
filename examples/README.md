@@ -2,7 +2,7 @@
 
 - `blog` — A simple blog  
   *this example uses `flow-static-land`*
-- `todo` – todo  
+- `portfolio` – A simple portfolio website  
   *this examples __DOES NOT__ use `flow-static-land`*
 
 
@@ -12,4 +12,6 @@
 cd examples/
 npm install
 npm run make-blog
+
+ls -la blog/build/
 ```

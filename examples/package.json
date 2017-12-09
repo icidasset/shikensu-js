@@ -7,10 +7,12 @@
     "chalk": "^2.3.0",
     "flow-static-land": "^0.2.8",
     "gray-matter": "^3.1.1",
+    "js-yaml": "^3.10.0",
     "remarkable": "^1.7.1",
     "slug": "^0.9.1"
   },
   "scripts": {
-    "make-blog": "rm -rf ./blog/build && babel-node blog/index.js"
+    "make-blog": "rm -rf ./blog/build && babel-node blog/index.js",
+    "make-portfolio": "rm -rf ./portfolio/build && babel-node portfolio/index.js"
   }
 }
