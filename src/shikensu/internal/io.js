@@ -6,7 +6,6 @@
 // Some IO functions.
 
 import * as fun from "flow-static-land/lib/Fun"
-import { localPath } from "./paths"
 
 import fs from "fs"
 import mkdirp from "mkdirp"
@@ -47,8 +46,8 @@ function _writeFile(
   def: Definition,
   contents: Buffer
 ): (() => Promise<void>) {
-  const targetDir = path.join(def.rootDirname, destination)
-  const targetPath = path.join(targetDir, localPath(def))
+  const targetDir = path.join(def.rootDirname, destination, def.dirname)
+  const targetPath = path.join(targetDir, def.basename + def.extname)
 
   return () => makeDirectoryPath(targetDir).then(_ => new Promise((resolve, reject) => {
     fs.writeFile(

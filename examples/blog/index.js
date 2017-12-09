@@ -1,4 +1,3 @@
-import * as task from "flow-static-land/lib/Task"
 import { runEff } from "flow-static-land/lib/Eff"
 import { curry, pipe } from "flow-static-land/lib/Fun"
 import { runTask } from "flow-static-land/lib/Task"
@@ -8,57 +7,64 @@ import chalk from "chalk"
 // Shikensu imports
 
 import * as Shikensu from "../../lib/shikensu"
-import { renameExt } from "../../lib/shikensu/contrib"
+import { permalink, renameExt, renderContent } from "../../lib/shikensu/contrib"
 import { read, write } from "../../lib/shikensu/contrib/io"
 
 
+// Local imports
 
-// ⚗️
+import {
+  chainTask,
+  mapTask,
 
+  frontmatter,
+  renameToTitle,
 
-const chain = curry(task.chain)
-const map = curry(task.map)
+  markdownRenderer,
+  layoutRenderer
+} from "./functions"
 
 
 
 // 🍯
 
 
-pipe(
-  Shikensu.listRelative("./blog"),
+const flow = pipe(
+  renameExt(".md", ".html"),
+  frontmatter,
+  renameToTitle,
+  permalink("index"),
+  renderContent(markdownRenderer),
+  renderContent(layoutRenderer)
+)
 
-  chain( inspect ),
-  chain( read ),
-  map( flow ),
-  chain( write("./build") ),
 
-  runTask,
-  runEff
-
-)([ "posts/*.md" ]).then(dict => {
+function success(dictionary) {
   console.log(chalk.green("Build was successful!"))
+}
 
-}).catch(err => {
+
+function failure(err) {
   console.error(chalk.red("Build failed!"))
   console.error(chalk.red("-------------"))
   console.error(chalk.red(err))
-
-})
-
-
-function flow(dict) {
-  return pipe(
-    renameExt(".md", ".html")
-  )(
-    dict
-  )
 }
 
 
-function inspect(dict) {
-  dict.forEach(
-    def => console.log(`Processing \`${def.basename}${def.extname}\``)
-  )
 
-  return task.of(dict)
-}
+// 🚀
+
+
+pipe(
+  Shikensu.listRelative ("./blog"),
+
+  chainTask     ( read ),
+  mapTask       ( flow ),
+  chainTask     ( write("./build") ),
+
+  runTask,
+  runEff,
+
+  a => a.then(success, failure)
+
+)([ "posts/*.md" ])
