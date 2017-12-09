@@ -4,11 +4,14 @@ import * as task from "flow-static-land/lib/Task"
 import { curry, pipe } from "flow-static-land/lib/Fun"
 
 import matter from "gray-matter"
+import path from "path"
 import Remarkable from "remarkable"
 import slug from "slug"
 
 
 // Shikensu imports
+
+import * as Shikensu from "../../lib/shikensu"
 
 import {
   bufferToString,
@@ -27,6 +30,30 @@ export const mapTask = curry(task.map)
 
 
 // Dictionary functions
+
+
+export function createIndex(dictionary) {
+  return arr.cons(_createIndex(dictionary), dictionary)
+}
+
+
+function _createIndex(dictionary) {
+  const root  = path.join(process.cwd(), "blog")
+  const def   = Shikensu.makeDefinition(root, "", "index.html")
+
+  return {
+    ...def,
+    metadata: {
+      title: "My f'ing blog"
+    },
+    content: pipe(
+      a => arr.map(b => `- [${b.metadata.title}](${b.dirname}/)`, a),
+      c => c.join("\n") + ".",
+      stringToBuffer,
+      maybe.of
+    )(dictionary)
+  }
+}
 
 
 export function frontmatter(dictionary) {
@@ -77,7 +104,7 @@ export function markdownRenderer(def) {
 
 export function layoutRenderer(def) {
   return maybe.map(
-    renderUtf8Content(wrapInLayout),
+    renderUtf8Content(wrapInLayout(def)),
     def.content
   )
 }
@@ -88,13 +115,17 @@ function renderMarkdown(md) {
 }
 
 
-function wrapInLayout(html) {
+const wrapInLayout = curry(_wrapInLayout)
+
+
+function _wrapInLayout(def, html) {
   return `
 <!DOCTYPE>
 <html>
-<head><title>My f'ing blog</title></head>
+<head><title>${def.metadata.title}</title></head>
 <body>
   ${html}
+  ${def.metadata.date ? '– Posted on ' + def.metadata.date : ''}
 </body>
 </html>
   `

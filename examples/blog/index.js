@@ -17,6 +17,7 @@ import {
   chainTask,
   mapTask,
 
+  createIndex,
   frontmatter,
   renameToTitle,
 
@@ -34,6 +35,7 @@ const flow = pipe(
   frontmatter,
   renameToTitle,
   permalink("index"),
+  createIndex,
   renderContent(markdownRenderer),
   renderContent(layoutRenderer)
 )
