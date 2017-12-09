@@ -32,9 +32,11 @@ const flow = dict => [
   renderContent(pageRenderer),
   createIndex,
   renderContent(layoutRenderer)
+
 ].reduce(
   (acc, fn) => fn(acc),
   (dict)
+
 )
 
 
