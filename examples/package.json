@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "chalk": "^2.3.0",
+    "flow-static-land": "^0.2.8"
+  }
+}

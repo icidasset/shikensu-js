@@ -1,3 +1,7 @@
+[ignore]
+examples/
+
+
 [libs]
 config/flow/ignore.js
 

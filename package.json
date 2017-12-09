@@ -4,7 +4,7 @@
   "description": "Run a sequence of functions on in-memory representations of files.",
   "author": "icid.asset@gmail.com",
   "license": "MIT",
-  "main": "src/shikensu.js",
+  "main": "lib/shikensu.js",
   "scripts": {
     "build": "babel src/ -d lib/",
     "prepublish": "npm run build",
