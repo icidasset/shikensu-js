@@ -12,6 +12,7 @@ import slug from "slug"
 // Shikensu imports
 
 import * as Shikensu from "../../lib/shikensu"
+import type { Definition, Dictionary, Renderer } from "../../lib/shikensu"
 
 import {
   bufferToString,
@@ -32,12 +33,12 @@ export const mapTask = curry(task.map)
 // Dictionary functions
 
 
-export function createIndex(dictionary) {
+export function createIndex(dictionary: Dictionary): Dictionary {
   return arr.cons(_createIndex(dictionary), dictionary)
 }
 
 
-function _createIndex(dictionary) {
+function _createIndex(dictionary: Dictionary): Definition {
   const root  = path.join(process.cwd(), "blog")
   const def   = Shikensu.makeDefinition(root, "", "index.html")
 
@@ -56,12 +57,12 @@ function _createIndex(dictionary) {
 }
 
 
-export function frontmatter(dictionary) {
+export function frontmatter(dictionary: Dictionary): Dictionary {
   return arr.map(_frontmatter, dictionary)
 }
 
 
-function _frontmatter(def) {
+function _frontmatter(def: Definition): Definition {
   if (maybe.isJust(def.content)) {
     const result = pipe(maybe.fromJust, bufferToString, matter)(def.content)
     const maybuf = pipe(stringToBuffer, maybe.of)(result.content)
@@ -77,12 +78,12 @@ function _frontmatter(def) {
 }
 
 
-export function renameToTitle(dictionary) {
+export function renameToTitle(dictionary: Dictionary): Dictionary {
   return arr.map(_renameToTitle, dictionary)
 }
 
 
-function _renameToTitle(def) {
+function _renameToTitle(def: Definition): Definition {
   return {
     ...def,
     basename: slug(def.metadata.title, { mode: "rfc3986" })
@@ -94,7 +95,7 @@ function _renameToTitle(def) {
 // Renderers
 
 
-export function markdownRenderer(def) {
+export function markdownRenderer(def: Definition): Renderer {
   return maybe.map(
     renderUtf8Content(renderMarkdown),
     def.content
@@ -102,7 +103,7 @@ export function markdownRenderer(def) {
 }
 
 
-export function layoutRenderer(def) {
+export function layoutRenderer(def: Definition): Renderer {
   return maybe.map(
     renderUtf8Content(wrapInLayout(def)),
     def.content
@@ -110,7 +111,7 @@ export function layoutRenderer(def) {
 }
 
 
-function renderMarkdown(md) {
+function renderMarkdown(md: string): string {
   return new Remarkable().render(md)
 }
 
@@ -118,7 +119,7 @@ function renderMarkdown(md) {
 const wrapInLayout = curry(_wrapInLayout)
 
 
-function _wrapInLayout(def, html) {
+function _wrapInLayout(def: Definition, html: string): string {
   return `
 <!DOCTYPE>
 <html>

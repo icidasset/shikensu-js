@@ -6,7 +6,7 @@
   "license": "MIT",
   "main": "lib/shikensu.js",
   "scripts": {
-    "build": "babel src/ -d lib/",
+    "build": "rm -rf lib/ && babel src/ -d lib/ && flow-copy-source -v src lib",
     "prepublish": "npm run build",
     "test": "ava ./tests/ --fail-fast",
     "type-check": "flow check src/"
@@ -16,7 +16,8 @@
     "babel-cli": "^6.26.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
-    "babel-preset-flow": "^6.23.0"
+    "babel-preset-flow": "^6.23.0",
+    "flow-copy-source": "^1.2.1"
   },
   "dependencies": {
     "flow-static-land": "^0.2.8",
