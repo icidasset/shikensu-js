@@ -68,7 +68,7 @@ function _clone(existingPath: string, newPath: string, dict: Dictionary): Dictio
  ** Copy definition properties into the metadata.
  **/
 export function copyPropsToMetadata(dict: Dictionary): Dictionary {
-  return arr.map(clearMetadataDef, dict)
+  return arr.map(copyPropsToMetadataDef, dict)
 }
 
 
@@ -85,7 +85,7 @@ export function copyPropsToMetadataDef(def: Definition): Definition {
 
   return {
     ...def,
-    metadata: { ...def.metadata, props }
+    metadata: { ...def.metadata, ...props }
   }
 }
 

@@ -26,6 +26,7 @@ import type { Maybe } from "flow-static-land/lib/Maybe"
 import * as Contrib from "../../src/shikensu/contrib"
 import * as Shikensu from "../../src/shikensu"
 import { localPath } from "../../src/shikensu/internal/paths"
+import { arrMap } from "../../src/shikensu/internal/utilities"
 
 import type { Definition, Dictionary } from "../../src/shikensu/internal/types"
 
@@ -39,6 +40,24 @@ const PATTERN = path.join("**", "*.md")
 
 
 // 👩‍🍳
+
+
+test("clearMetadata", async t => {
+  const effect: Eff<{}, Promise<Dictionary>> = runTask(
+    task.map(
+      fun.pipe(
+        arrMap(def => ({ ...def, metadata: { hello: "Hello" } })),
+        Contrib.clearMetadata
+      ),
+      Shikensu.listRelative("./tests/fixtures", [PATTERN])
+    )
+  )
+
+  await runEff(effect).then(dictionary => {
+    const def: Definition = fun.pipe(arr.last, maybe.fromJust)(dictionary)
+    t.is(Object.keys(def.metadata).length, 0)
+  })
+})
 
 
 test("clone", async t => {
@@ -59,6 +78,21 @@ test("clone", async t => {
 })
 
 
+test("copyPropsToMetadata", async t => {
+  const effect: Eff<{}, Promise<Dictionary>> = runTask(
+    task.map(
+      Contrib.copyPropsToMetadata,
+      Shikensu.listRelative("./tests/fixtures", [PATTERN])
+    )
+  )
+
+  await runEff(effect).then(dictionary => {
+    const def: Definition = fun.pipe(arr.last, maybe.fromJust)(dictionary)
+    t.is(def.metadata.basename, "example")
+  })
+})
+
+
 test("exclude", async t => {
   const effect: Eff<{}, Promise<Dictionary>> = runTask(
     task.map(
@@ -69,6 +103,21 @@ test("exclude", async t => {
 
   await runEff(effect).then(dictionary => {
     t.is(arr.length(dictionary), 0)
+  })
+})
+
+
+test("insertMetadata", async t => {
+  const effect: Eff<{}, Promise<Dictionary>> = runTask(
+    task.map(
+      Contrib.insertMetadata({ hi: "Hi!" }),
+      Shikensu.listRelative("./tests/fixtures", [PATTERN])
+    )
+  )
+
+  await runEff(effect).then(dictionary => {
+    const def: Definition = fun.pipe(arr.last, maybe.fromJust)(dictionary)
+    t.is(def.metadata.hi, "Hi!")
   })
 })
 
@@ -176,5 +225,25 @@ test("setContent", async t => {
   await runEff(effect).then(dictionary => {
     const def: Definition = fun.pipe(arr.last, maybe.fromJust)(dictionary)
     t.is(to_s(def.content), to_s(bufm))
+  })
+})
+
+
+test("replaceMetadata", async t => {
+  const effect: Eff<{}, Promise<Dictionary>> = runTask(
+    task.map(
+      fun.pipe(
+        arrMap(def => ({ ...def, metadata: { hello: "Hello" } })),
+        Contrib.replaceMetadata({ hi: "Hi!" })
+      ),
+      Shikensu.listRelative("./tests/fixtures", [PATTERN])
+    )
+  )
+
+  await runEff(effect).then(dictionary => {
+    const def: Definition = fun.pipe(arr.last, maybe.fromJust)(dictionary)
+
+    t.is(def.metadata.hello, undefined)
+    t.is(def.metadata.hi, "Hi!")
   })
 })
