@@ -26,7 +26,7 @@ It basically boils down to this:
 
 ```js
 import * as shikensu from "shikensu"
-import { renameExt, permalink } from "shikensu/lib/contrib"
+import { renameExt, permalink } from "shikensu/lib/shikensu/contrib"
 
 const io =
   fn => dictionary => fn(dictionary)()
