@@ -32,10 +32,10 @@ const io =
   fn => dictionary => fn(dictionary)()
 
 shikensu.listRelative("./blog", ["posts/**/*.md"])()
-  .then( io(read) )
-  .then( renameExt(".md", ".html") )
-  .then( permalink("index" ))
-  .then( io(write("build")) )
+  .then(io(read))
+  .then(renameExt(".md", ".html"))
+  .then(permalink("index"))
+  .then(io(write("build")))
 ```
 
 Given `./blog/posts/code/example-post.md`,  
