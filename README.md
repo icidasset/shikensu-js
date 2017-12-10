@@ -16,18 +16,20 @@ This is a port of the original [Haskell version](https://github.com/icidasset/sh
 
 ### Usage
 
-This library was built with [`flow-static-land`](https://github.com/gcanti/flow-static-land), which you may or may not use. You can look at the examples for both use cases.
+This library was built with [`flow-static-land`](https://github.com/gcanti/flow-static-land), which you may or may not use.  
+You can look at the examples for both use cases:
 
 - [Example with](examples/blog/index.js#L61)
 - [Example without](examples/portfolio/index.js#L56)
 
 It basically boils down to this:
 
-```
+```js
 import * as shikensu from "shikensu"
 import { renameExt, permalink } from "shikensu/lib/contrib"
 
-const io = fn => dictionary => fn(dictionary)()
+const io =
+  fn => dictionary => fn(dictionary)()
 
 shikensu.listRelative("./blog", ["posts/**/*.md"])()
   .then( io(read) )
@@ -42,17 +44,17 @@ this code will produce `./blog/build/code/example-post/index.html`.
 
 #### Contrib
 
-You can see all the functions in the [source code](src/shikensu/contrib.js) which includes documentation and some examples.
+You can see all the functions in the [source code](src/shikensu/contrib.js#L21) which includes documentation and some examples.
 
 
 #### List functions
 
 The main module has the following list functions:
 
-- `list(a: string, b: Array<string>)`
-- `listF(a: Array<string>, b: string)`
-- `listRelative(a: string, b: Array<string>)`
-- `listRelativeF(a: Array<string>, b: string)`
+- `list(absolutePath: string, patterns: Array<string>)`
+- `listF(patterns: Array<string>, absolutePath: string)`
+- `listRelative(relativePath: string, patterns: Array<string>)`
+- `listRelativeF(patterns: Array<string>, relativePath: string)`
 
 And the following functions to [construct paths](src/shikensu/internal/paths.js#L16):
 
@@ -60,7 +62,7 @@ And the following functions to [construct paths](src/shikensu/internal/paths.js#
 - `localPath(definition)`
 - `workspacePath(definition)`
 
-See the [source code](src/shikensu.js) for other functions.
+See the [source code](src/shikensu.js#L34) for other functions.
 
 
 #### Curried functions
