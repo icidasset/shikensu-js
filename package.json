@@ -1,9 +1,10 @@
 {
   "name": "shikensu",
-  "version": "0.1.0",
-  "description": "Run a sequence of functions on in-memory representations of files.",
+  "version": "1.0.0",
+  "description": "Run a sequence of functions on in-memory representations of files",
   "author": "icid.asset@gmail.com",
   "license": "MIT",
+  "homepage": "https://github.com/icidasset/shikensu-js",
   "main": "lib/shikensu.js",
   "scripts": {
     "build": "rm -rf lib/ && babel src/ -d lib/ && flow-copy-source -v src lib",
@@ -31,5 +32,22 @@
       "babel-register",
       "babel-polyfill"
     ]
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/icidasset/shikensu-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/icidasset/shikensu-js/issues"
+  },
+  "keywords": [
+    "flow",
+    "flowtype",
+    "functions",
+    "list",
+    "in-memory",
+    "sequence",
+    "static",
+    "static website"
+  ]
 }
