@@ -251,7 +251,7 @@ function _renameExtDef(oldExtname: string, newExtname: string, def: Definition):
  ** Render content.
  **
  ** Replace the content property by providing a renderer.
- ** A renderer is a function with the signature `Definition -> Maybe ByteString`.
+ ** A renderer is a function with the signature `Definition -> Maybe Buffer`.
  ** You can use this to render templates, markdown, etc.
  */
 export const renderContent = fun.curry(_renderContent)
